@@ -2,8 +2,6 @@ library(optparse)
 
 # Define command line options
 option_list <- list(
-  
-  # Path management flags
   make_option(
     c("--mice"),
     action  = "store_true",

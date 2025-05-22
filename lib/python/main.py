@@ -11,6 +11,7 @@ import warnings
 from src import config
 from src import umap
 from src import clustering
+from src import profiling
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -107,6 +108,14 @@ def main(args):
             logger.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
             eugpp_subsample = clustering.EUGPP(path2SP=path2SP, group=g)
             eugpp_subsample.gaussian(optimal_k[g])
+    
+    if args.all or args.profile:
+        for method in ["kmeans", "gmm"]:
+            logger.info(f"Performing Profiling for {method}...")
+            os.makedirs(
+                f"../../viz/{method}_profile", exist_ok=True
+            )
+            profiling.cldata(method, path2SP).draw_boxplots()
         
     logger.info(f"Pipeline completed in {time.time() - start_time:.2f} seconds")
 
@@ -137,6 +146,11 @@ if __name__ == "__main__":
         "--gauss", 
         action = "store_true",
         help   = "Perform Gaussian Mixture clustering"
+    )
+    parser.add_argument(
+        "--profile", 
+        action = "store_true",
+        help   = "Perform Profiling of cluster results"
     )
     args = parser.parse_args()
     
